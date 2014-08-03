@@ -1,0 +1,24 @@
+{
+    "name": "jildertmiedema/commander",
+    "description": "Commands and domain events",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jildert Miedema",
+            "email": "jildertmiedema@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "~0.9"
+    },
+    "autoload": {
+        "psr-0": {
+            "JildertMiedema\\Commander": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

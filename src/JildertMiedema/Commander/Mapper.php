@@ -6,6 +6,7 @@ use InvalidArgumentException;
 
 class Mapper
 {
+
     /**
      * Map an array of input to a command's properties.
      * - Code courtesy of Taylor Otwell.

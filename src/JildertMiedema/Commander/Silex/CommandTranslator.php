@@ -5,6 +5,7 @@ use JildertMiedema\Commander\CommandTranslatorInterface;
 
 class CommandTranslator implements CommandTranslatorInterface
 {
+
     public function toCommandHandler($command)
     {
         $class = get_class($command);

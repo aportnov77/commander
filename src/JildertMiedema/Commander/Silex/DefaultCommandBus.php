@@ -3,9 +3,11 @@ namespace JildertMiedema\Commander\Silex;
 
 use Silex\Application;
 use JildertMiedema\Commander\CommandBus;
+use JildertMiedema\Commander\DecoratedCommandBus;
 
 class DefaultCommandBus implements CommandBus {
 
+    use DecoratedCommandBus;
     /**
      * @var Application
      */
@@ -15,13 +17,6 @@ class DefaultCommandBus implements CommandBus {
      * @var CommandTranslator
      */
     protected $commandTranslator;
-
-    /**
-     * List of optional decorators for command bus.
-     *
-     * @var array
-     */
-    protected $decorators = [];
 
     /**
      * @param Application $app
@@ -46,39 +41,5 @@ class DefaultCommandBus implements CommandBus {
         $handler = $this->commandTranslator->toCommandHandler($command);
 
         return $this->app[$handler]->handle($command);
-    }
-
-    /**
-     * Decorate the command bus with any executable actions.
-     *
-     * @param  string $className
-     * @return mixed
-     */
-    public function decorate($className)
-    {
-        $this->decorators[] = $className;
-    }
-
-    /**
-     * Execute all registered decorators
-     *
-     * @param  object $command
-     * @return null
-     */
-    protected function executeDecorators($command)
-    {
-        foreach ($this->decorators as $className)
-        {
-            $instance = $this->app[$className];
-
-            if ( ! $instance instanceof CommandBus)
-            {
-                $message = 'The class to decorate must be an implementation of JildertMiedema\Commander\CommandBus';
-
-                throw new InvalidArgumentException($message);
-            }
-
-            $instance->execute($command);
-        }
     }
 }

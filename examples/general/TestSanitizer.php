@@ -2,7 +2,7 @@
 
 use JildertMiedema\Commander\CommandBus;
 
-class TestSantizer implements CommandBus
+class TestSanitizer implements CommandBus
 {
     /**
      * Execute a command
@@ -13,7 +13,7 @@ class TestSantizer implements CommandBus
      */
     public function execute($command)
     {
-        var_dump('santizer');
+        var_dump('sanitizer');
 
         foreach ($command as $key => $value) {
             $command->$key = trim($value);

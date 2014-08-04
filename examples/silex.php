@@ -5,7 +5,7 @@ require_once 'silex/CommanderController.php';
 require_once 'general/TestCommand.php';
 require_once 'general/TestCommandHandler.php';
 require_once 'general/TestCommandValidator.php';
-require_once 'general/TestSantizer.php';
+require_once 'general/TestSanitizer.php';
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -20,8 +20,8 @@ $app['testCommand.handler'] = $app->share(function() use ($app) {
     return new TestCommandHandler();
 });
 
-$app['commander.santizer'] = $app->share(function() use ($app) {
-    return new TestSantizer();
+$app['commander.sanitizer'] = $app->share(function() use ($app) {
+    return new TestSanitizer();
 });
 
 $app['testCommand.validator'] = $app->share(function() use ($app) {
@@ -32,8 +32,8 @@ $app->get('/', function() use ($app) {
     return $app['commander.executor']->execute('TestCommand');
 });
 
-$app->get('/santizer', function() use ($app) {
-    return $app['commander.executor']->execute('TestCommand', null, ['commander.santizer']);
+$app->get('/sanitizer', function() use ($app) {
+    return $app['commander.executor']->execute('TestCommand', null, ['commander.sanitizer']);
 });
 
 $app->get('/controller', 'commander.controller:test');

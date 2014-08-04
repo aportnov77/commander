@@ -21,6 +21,6 @@ class CommanderController
 
     public function test()
     {
-        return $this->execute('TestCommand', null, ['commander.santizer']);
+        return $this->execute('TestCommand', null, ['commander.sanitizer']);
     }
 }

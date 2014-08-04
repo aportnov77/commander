@@ -1,6 +1,7 @@
 <?php
 namespace JildertMiedema\Commander\Silex;
 
+use JildertMiedema\Commander\CommandTranslatorInterface;
 use Silex\Application;
 use JildertMiedema\Commander\CommandBus;
 use JildertMiedema\Commander\DecoratedCommandBus;
@@ -14,15 +15,15 @@ class DefaultCommandBus implements CommandBus {
     protected $app;
 
     /**
-     * @var CommandTranslator
+     * @var CommandTranslatorInterface
      */
     protected $commandTranslator;
 
     /**
      * @param Application $app
-     * @param CommandTranslator $commandTranslator
+     * @param CommandTranslatorInterface $commandTranslator
      */
-    function __construct(Application $app, CommandTranslator $commandTranslator)
+    function __construct(Application $app, CommandTranslatorInterface $commandTranslator)
     {
         $this->app = $app;
         $this->commandTranslator = $commandTranslator;

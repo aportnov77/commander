@@ -8,6 +8,7 @@
             "email": "jildertmiedema@gmail.com"
         }
     ],
+    "keywords": ["commander", "command bus", "domain events", "silex"],
     "require": {
         "php": ">=5.4.0"
     },

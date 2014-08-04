@@ -20,7 +20,7 @@ $resolver =  new Resolver;
 $defaultCommandBus = new DefaultCommandBus($translator, $resolver);
 $commandBus = new ValidationCommandBus($defaultCommandBus, $translator, $resolver);
 $mapper = new Mapper();
-$manager = new Manager($mapper, $commandBus);
+$manager = new Manager($commandBus, $mapper);
 $executor = new Executor($manager);
 
 echo $executor->execute('TestCommand', null, ['TestSantizer']);

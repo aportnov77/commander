@@ -23,7 +23,7 @@ class CommanderServiceProvider implements ServiceProviderInterface
             $resolver = new Resolver($app);
             $defaultCommandBus = new DefaultCommandBus($translator, $resolver);
             $commandBus = new ValidationCommandBus($defaultCommandBus, $translator, $resolver);
-            return new Manager($mapper, $commandBus);
+            return new Manager($commandBus, $mapper);
         });
 
         $app['commander.executor'] = $app->share(function() use ($app) {

@@ -1,20 +1,19 @@
 <?php
 namespace JildertMiedema\Commander;
 
-
 class Manager
 {
     private $mapper;
     private $commandBus;
 
     /**
-     * @param Mapper $mapper
      * @param CommandBus $commandBus
+     * @param Mapper $mapper
      */
-    public function __construct(Mapper $mapper, CommandBus $commandBus)
+    public function __construct(CommandBus $commandBus, Mapper $mapper)
     {
-        $this->mapper = $mapper;
         $this->commandBus = $commandBus;
+        $this->mapper = $mapper;
     }
 
     /**

@@ -1,32 +1,30 @@
 <?php
-namespace JildertMiedema\Commander\Silex;
-
-use JildertMiedema\Commander\CommandTranslatorInterface;
-use Silex\Application;
-use JildertMiedema\Commander\CommandBus;
-use JildertMiedema\Commander\DecoratedCommandBus;
+namespace JildertMiedema\Commander;
 
 class DefaultCommandBus implements CommandBus {
 
     use DecoratedCommandBus;
-    /**
-     * @var Application
-     */
-    protected $app;
 
     /**
      * @var CommandTranslatorInterface
      */
     protected $commandTranslator;
+    /**
+     * @var ResolverInterface
+     */
+    private $resolver;
 
     /**
-     * @param Application $app
      * @param CommandTranslatorInterface $commandTranslator
+     * @param ResolverInterface $resolver
      */
-    function __construct(Application $app, CommandTranslatorInterface $commandTranslator)
+    function __construct(
+        CommandTranslatorInterface $commandTranslator,
+        ResolverInterface $resolver
+    )
     {
-        $this->app = $app;
         $this->commandTranslator = $commandTranslator;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -39,8 +37,10 @@ class DefaultCommandBus implements CommandBus {
     {
         $this->executeDecorators($command);
 
-        $handler = $this->commandTranslator->toCommandHandler($command);
+        $handlerName = $this->commandTranslator->toCommandHandler($command);
 
-        return $this->app[$handler]->handle($command);
+        $handle = $this->resolver->resolve($handlerName);
+
+        return $handle->handle($command);
     }
 }

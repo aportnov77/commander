@@ -32,9 +32,9 @@ trait DecoratedCommandBus
      */
     protected function executeDecorators($command)
     {
-        foreach ($this->decorators as $className)
+        foreach ($this->decorators as $decoratorName)
         {
-            $instance = $this->app[$className];
+            $instance = $this->resolver->resolve($decoratorName);
 
             if ( ! $instance instanceof CommandBus)
             {

@@ -1,9 +1,5 @@
 <?php
-namespace JildertMiedema\Commander\Silex;
-
-use Silex\Application;
-use JildertMiedema\Commander\CommandBus;
-use JildertMiedema\Commander\DecoratedCommandBus;
+namespace JildertMiedema\Commander;
 
 class ValidationCommandBus implements CommandBus
 {
@@ -16,20 +12,28 @@ class ValidationCommandBus implements CommandBus
     protected $bus;
 
     /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var CommandTranslator
+     * @var CommandTranslatorInterface
      */
     protected $commandTranslator;
+    /**
+     * @var ResolverInterface
+     */
+    private $resolver;
 
-    function __construct(CommandBus $bus, Application $app, CommandTranslator $commandTranslator)
+    /**
+     * @param CommandBus $bus
+     * @param CommandTranslatorInterface $commandTranslator
+     * @param ResolverInterface $resolver
+     */
+    function __construct(
+        CommandBus $bus,
+        CommandTranslatorInterface $commandTranslator,
+        ResolverInterface $resolver
+    )
     {
         $this->bus = $bus;
-        $this->app = $app;
         $this->commandTranslator = $commandTranslator;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -60,9 +64,9 @@ class ValidationCommandBus implements CommandBus
     {
         $validator = $this->commandTranslator->toValidator($command);
 
-        if (in_array($validator, $this->app->keys()))
+        if ($this->resolver->canResolve($validator))
         {
-            $this->app[$validator]->validate($command);
+            $this->resolver->resolve($validator)->validate($command);
         }
     }
 

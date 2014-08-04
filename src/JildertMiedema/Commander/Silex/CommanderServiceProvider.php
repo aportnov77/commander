@@ -5,6 +5,8 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use JildertMiedema\Commander\Mapper;
 use JildertMiedema\Commander\Manager;
+use JildertMiedema\Commander\DefaultCommandBus;
+use JildertMiedema\Commander\ValidationCommandBus;
 
 class CommanderServiceProvider implements ServiceProviderInterface
 {
@@ -18,9 +20,14 @@ class CommanderServiceProvider implements ServiceProviderInterface
         $app['commander.manager'] = $app->share(function() use ($app) {
             $mapper = new Mapper();
             $translator = new CommandTranslator();
-            $defaultCommandBus = new DefaultCommandBus($app, $translator);
-            $commandBus = new ValidationCommandBus($defaultCommandBus, $app, $translator);
+            $resolver = new Resolver($app);
+            $defaultCommandBus = new DefaultCommandBus($translator, $resolver);
+            $commandBus = new ValidationCommandBus($defaultCommandBus, $translator, $resolver);
             return new Manager($mapper, $commandBus);
+        });
+
+        $app['commander.executor'] = $app->share(function() use ($app) {
+            return new Executor($app);
         });
     }
 

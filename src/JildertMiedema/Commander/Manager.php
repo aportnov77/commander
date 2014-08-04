@@ -18,6 +18,14 @@ class Manager
     }
 
     /**
+     * @return ExecutorInterface
+     */
+    public function getExecutor()
+    {
+        return $this->executor;
+    }
+
+    /**
      * @return mixed
      */
     public function getCommandBus()

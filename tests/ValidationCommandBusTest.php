@@ -1,13 +1,9 @@
 <?php
-namespace JildertMiedema\Commander\Silex;
+namespace JildertMiedema\Commander;
 
 use Mockery as m;
 
 class ValidationCommandBusTest extends \PHPUnit_Framework_TestCase {
-    /**
-     * @var Silex\Application
-     */
-    private $app;
 
     /**
      * @var CommandTranslator
@@ -30,14 +26,14 @@ class ValidationCommandBusTest extends \PHPUnit_Framework_TestCase {
     {
         parent::setUp();
 
-        $this->app = new \Silex\Application();
-        $this->translator = m::mock('JildertMiedema\Commander\Silex\CommandTranslator');
-        $this->defaultCommandBus = m::mock('JildertMiedema\Commander\Silex\DefaultCommandBus');
+        $this->resolver = m::mock('JildertMiedema\Commander\ResolverInterface');
+        $this->translator = m::mock('JildertMiedema\Commander\CommandTranslatorInterface');
+        $this->defaultCommandBus = m::mock('JildertMiedema\Commander\DefaultCommandBus');
 
         $this->commandBus = new ValidationCommandBus(
             $this->defaultCommandBus,
-            $this->app,
-            $this->translator
+            $this->translator,
+            $this->resolver
         );
     }
 
@@ -50,7 +46,8 @@ class ValidationCommandBusTest extends \PHPUnit_Framework_TestCase {
     public function testExecute()
     {
         $validator = m::mock('JildertMiedema\Commander\ValidationInterface');
-        $this->app['Validator'] = $validator;
+        $this->resolver->shouldReceive('canResolve')->with('Validator')->andReturn(true);
+        $this->resolver->shouldReceive('resolve')->with('Validator')->andReturn($validator);
 
         $this->translator->shouldReceive('toValidator')->once()->andReturn('Validator');
         $validator->shouldReceive('validate')->once()->andReturn(true);
@@ -65,10 +62,13 @@ class ValidationCommandBusTest extends \PHPUnit_Framework_TestCase {
     public function testExecuteWithDecorator()
     {
         $validator = m::mock('JildertMiedema\Commander\ValidationInterface');
-        $this->app['Validator'] = $validator;
 
         $decorator = m::mock('JildertMiedema\Commander\CommandBus');
-        $this->app['Decorator'] = $decorator;
+
+        $this->resolver->shouldReceive('canResolve')->with('Validator')->andReturn(true);
+        $this->resolver->shouldReceive('resolve')->with('Validator')->andReturn($validator);
+        $this->resolver->shouldReceive('resolve')->with('Decorator')->andReturn($decorator);
+
 
         $this->translator->shouldReceive('toValidator')->once()->andReturn('Validator');
         $validator->shouldReceive('validate')->once()->andReturn(true);

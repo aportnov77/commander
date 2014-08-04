@@ -1,14 +1,9 @@
 <?php
-namespace JildertMiedema\Commander\Silex;
+namespace JildertMiedema\Commander;
 
 use Mockery as m;
 
 class DefaultCommandBusTest extends \PHPUnit_Framework_TestCase {
-
-    /**
-     * @var Silex\Application
-     */
-    private $app;
 
     /**
      * @var CommandTranslator
@@ -20,15 +15,19 @@ class DefaultCommandBusTest extends \PHPUnit_Framework_TestCase {
      */
     private $commandBus;
 
+    /**
+     * @var ResolverInterface
+     */
+    private $resolver;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->app = new \Silex\Application();
-        $this->translator = m::mock('JildertMiedema\Commander\Silex\CommandTranslator');
+        $this->resolver = m::mock('JildertMiedema\Commander\ResolverInterface');
+        $this->translator = m::mock('JildertMiedema\Commander\CommandTranslatorInterface');
 
-        $this->commandBus = new DefaultCommandBus($this->app, $this->translator);
+        $this->commandBus = new DefaultCommandBus($this->translator, $this->resolver);
     }
 
     protected function tearDown()
@@ -40,9 +39,9 @@ class DefaultCommandBusTest extends \PHPUnit_Framework_TestCase {
     public function testExecute()
     {
         $handler = m::mock('JildertMiedema\Commander\CommandHandler');
-        $this->app['TestHandler'] = $handler;
 
         $this->translator->shouldReceive('toCommandHandler')->once()->andReturn('TestHandler');
+        $this->resolver->shouldReceive('resolve')->with('TestHandler')->andReturn($handler);
         $handler->shouldReceive('handle')->once()->andReturn('Result');
 
         $command = m::mock('TestCommand');
@@ -54,10 +53,10 @@ class DefaultCommandBusTest extends \PHPUnit_Framework_TestCase {
     public function testExecuteWithDecorator()
     {
         $handler = m::mock('JildertMiedema\Commander\CommandHandler');
-        $this->app['TestHandler'] = $handler;
-
         $decorator = m::mock('JildertMiedema\Commander\CommandBus');
-        $this->app['Decorator'] = $decorator;
+
+        $this->resolver->shouldReceive('resolve')->with('TestHandler')->andReturn($handler);
+        $this->resolver->shouldReceive('resolve')->with('Decorator')->andReturn($decorator);
 
         $this->translator->shouldReceive('toCommandHandler')->once()->andReturn('TestHandler');
         $handler->shouldReceive('handle')->once()->andReturn('Result');
@@ -77,10 +76,10 @@ class DefaultCommandBusTest extends \PHPUnit_Framework_TestCase {
     public function testExecuteWithIncorrectDecorator()
     {
         $handler = m::mock('JildertMiedema\Commander\CommandHandler');
-        $this->app['TestHandler'] = $handler;
+        $this->resolver->shouldReceive('resolve')->with('TestHandler')->andReturn($handler);
 
         $decorator = m::mock('StdClass');
-        $this->app['Decorator'] = $decorator;
+        $this->resolver->shouldReceive('resolve')->with('Decorator')->andReturn($decorator);
 
         $this->commandBus->decorate('Decorator');
 

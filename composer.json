@@ -1,6 +1,6 @@
 {
     "name": "jildertmiedema/commander",
-    "description": "Commands and domain events",
+    "description": "Command bus implementation: Commands and domain events",
     "license": "MIT",
     "authors": [
         {

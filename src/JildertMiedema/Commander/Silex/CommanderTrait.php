@@ -6,11 +6,15 @@ use Silex\Application;
 trait CommanderTrait 
 {
 
-    protected function execute($command, array $input = null, array $decorators = []) {
+    protected function execute($command, array $input = [], array $decorators = []) {
         if (!isset($this->app) || !($this->app instanceof Application)) {
             throw new \Exception(sprintf("Silex\Application needs to injected in '%s::\$app'", get_called_class()));
         }
-        $input = $input ?: $this->app['request']->query->all();
+       try {
+           $input = $input ?: $this->app['request']->query->all();
+       } catch (\RuntimeException $e) {
+           //no request available
+       }
 
         $manager = $this->app['commander.manager'];
 

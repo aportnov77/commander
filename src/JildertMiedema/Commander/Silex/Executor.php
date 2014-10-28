@@ -26,7 +26,7 @@ class Executor implements ExecutorInterface
 
     public function execute(
         $command,
-        array $input = null,
+        array $input = [],
         array $decorators = []
     ) {
         return $this->traitExecute($command, $input, $decorators);
